@@ -12,18 +12,34 @@ body{
   margin:0;
   padding:20px;
 }
-h1{
+h1,h2{
   text-align:center;
   color:#2f5d50;
+}
+label{
+  display:block;
+  margin-top:10px;
+}
+input{
+  width:100%;
+  padding:10px;
+  font-size:16px;
+  margin-top:5px;
 }
 button{
   width:100%;
   padding:15px;
-  margin:10px 0;
+  margin-top:15px;
   font-size:18px;
   background:#2f5d50;
   color:white;
   border:none;
+  border-radius:8px;
+}
+.card{
+  background:white;
+  padding:15px;
+  margin-top:20px;
   border-radius:8px;
 }
 </style>
@@ -33,21 +49,61 @@ button{
 
 <h1>🐄 ShadowBov</h1>
 
-<button onclick="alert('Tela de cadastro em construção')">
-📋 Cadastro do Animal
-</button>
+<div class="card">
+<h2>Cadastro do Animal</h2>
 
-<button onclick="alert('Tela de exame clínico em construção')">
-🩺 Exame Clínico
-</button>
+<label>Brinco / Identificação</label>
+<input id="brinco">
 
-<button onclick="alert('Histórico em construção')">
-📂 Histórico
-</button>
+<label>Idade</label>
+<input id="idade">
 
-<button onclick="alert('Configurações em construção')">
-⚙️ Configurações
-</button>
+<label>Raça</label>
+<input id="raca">
+
+<label>Sexo</label>
+<input id="sexo">
+
+<button onclick="salvar()">Salvar Animal</button>
+</div>
+
+<div class="card">
+<h2>Animais Cadastrados</h2>
+<div id="lista"></div>
+</div>
+
+<script>
+let animais = JSON.parse(localStorage.getItem("animais")) || [];
+
+function salvar(){
+  let animal = {
+    brinco: brinco.value,
+    idade: idade.value,
+    raca: raca.value,
+    sexo: sexo.value
+  };
+
+  animais.push(animal);
+  localStorage.setItem("animais", JSON.stringify(animais));
+  mostrar();
+
+  brinco.value="";
+  idade.value="";
+  raca.value="";
+  sexo.value="";
+}
+
+function mostrar(){
+  lista.innerHTML="";
+  animais.forEach((a,i)=>{
+    lista.innerHTML += `
+      <p><b>${a.brinco}</b> - ${a.raca} - ${a.idade} - ${a.sexo}</p>
+    `;
+  });
+}
+
+mostrar();
+</script>
 
 </body>
 </html>
