@@ -42,9 +42,7 @@ button{
   margin-top:20px;
   border-radius:8px;
 }
-hr{
-  margin:30px 0;
-}
+hr{ margin:30px 0; }
 </style>
 </head>
 
@@ -56,22 +54,18 @@ hr{
 <div class="card">
 <h2>Cadastro do Animal</h2>
 
-<label>Brinco / Identificação</label>
+<label>Brinco</label>
 <input id="brinco">
-
 <label>Idade</label>
 <input id="idade">
-
 <label>Raça</label>
 <input id="raca">
-
 <label>Sexo</label>
 <input id="sexo">
 
 <button onclick="salvarAnimal()">Salvar Animal</button>
 </div>
 
-<!-- LISTA -->
 <div class="card">
 <h2>Animais Cadastrados</h2>
 <div id="lista"></div>
@@ -79,20 +73,18 @@ hr{
 
 <hr>
 
-<!-- EXAME CLÍNICO -->
+<!-- EXAME -->
 <div class="card">
 <h2>🩺 Exame Clínico</h2>
 
-<label>Animal (Brinco)</label>
+<label>Animal</label>
 <select id="animalExame"></select>
 
 <label>Temperatura (°C)</label>
 <input id="temp">
-
-<label>Frequência Cardíaca (bpm)</label>
+<label>FC (bpm)</label>
 <input id="fc">
-
-<label>Frequência Respiratória (mpm)</label>
+<label>FR (mpm)</label>
 <input id="fr">
 
 <label>Rúmen</label>
@@ -100,16 +92,13 @@ hr{
   <option>Normal</option>
   <option>Hipomotilidade</option>
   <option>Atonia</option>
-  <option>Hipermotilidade</option>
 </select>
 
 <label>Mucosas</label>
 <select id="mucosa">
   <option>Rosadas</option>
   <option>Pálidas</option>
-  <option>Congestas</option>
   <option>Ictéricas</option>
-  <option>Cianóticas</option>
 </select>
 
 <label>Estado Geral</label>
@@ -122,9 +111,16 @@ hr{
 <button onclick="salvarExame()">Salvar Exame</button>
 </div>
 
+<hr>
+
+<!-- HISTÓRICO -->
 <div class="card">
-<h2>📂 Exames Registrados</h2>
-<div id="exames"></div>
+<h2>📂 Histórico por Animal</h2>
+
+<label>Selecionar Animal</label>
+<select id="animalHistorico" onchange="mostrarHistorico()"></select>
+
+<div id="historico"></div>
 </div>
 
 <script>
@@ -132,20 +128,19 @@ let animais = JSON.parse(localStorage.getItem("animais")) || [];
 let exames = JSON.parse(localStorage.getItem("exames")) || [];
 
 function salvarAnimal(){
-  let animal = {
+  animais.push({
     brinco: brinco.value,
     idade: idade.value,
     raca: raca.value,
     sexo: sexo.value
-  };
-  animais.push(animal);
+  });
   localStorage.setItem("animais", JSON.stringify(animais));
-  atualizarTudo();
-  brinco.value=""; idade.value=""; raca.value=""; sexo.value="";
+  atualizar();
+  brinco.value=idade.value=raca.value=sexo.value="";
 }
 
 function salvarExame(){
-  let exame = {
+  exames.push({
     animal: animalExame.value,
     temp: temp.value,
     fc: fc.value,
@@ -154,35 +149,39 @@ function salvarExame(){
     mucosa: mucosa.value,
     estado: estado.value,
     data: new Date().toLocaleString()
-  };
-  exames.push(exame);
+  });
   localStorage.setItem("exames", JSON.stringify(exames));
-  atualizarTudo();
+  atualizar();
 }
 
-function atualizarTudo(){
+function atualizar(){
   lista.innerHTML="";
   animalExame.innerHTML="";
-  examesDiv = "";
+  animalHistorico.innerHTML="";
 
   animais.forEach(a=>{
     lista.innerHTML += <p><b>${a.brinco}</b> - ${a.raca}</p>;
     animalExame.innerHTML += <option>${a.brinco}</option>;
+    animalHistorico.innerHTML += <option>${a.brinco}</option>;
   });
 
-  exames.forEach(e=>{
-    examesDiv += `
-      <p><b>${e.animal}</b> | ${e.data}<br>
-      T: ${e.temp} | FC: ${e.fc} | FR: ${e.fr}<br>
-      Rúmen: ${e.rumen} | Mucosa: ${e.mucosa} | Estado: ${e.estado}
-      </p><hr>`;
-  });
-
-  examesContainer.innerHTML = examesDiv;
+  mostrarHistorico();
 }
 
-let examesContainer = document.getElementById("exames");
-atualizarTudo();
+function mostrarHistorico(){
+  historico.innerHTML="";
+  let sel = animalHistorico.value;
+
+  exames.filter(e=>e.animal===sel).forEach(e=>{
+    historico.innerHTML += `
+      <p><b>${e.data}</b><br>
+      T:${e.temp} | FC:${e.fc} | FR:${e.fr}<br>
+      Rúmen:${e.rumen} | Mucosa:${e.mucosa} | Estado:${e.estado}
+      </p><hr>`;
+  });
+}
+
+atualizar();
 </script>
 
 </body>
