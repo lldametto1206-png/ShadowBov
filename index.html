@@ -9,7 +9,6 @@
 body{
   font-family: Arial, sans-serif;
   background:#f4f7f6;
-  margin:0;
   padding:20px;
 }
 h1,h2{
@@ -23,18 +22,17 @@ label{
 input, select{
   width:100%;
   padding:10px;
-  font-size:16px;
   margin-top:5px;
 }
 button{
   width:100%;
   padding:15px;
   margin-top:15px;
-  font-size:18px;
   background:#2f5d50;
   color:white;
   border:none;
   border-radius:8px;
+  font-size:18px;
 }
 .card{
   background:white;
@@ -42,7 +40,6 @@ button{
   margin-top:20px;
   border-radius:8px;
 }
-hr{ margin:30px 0; }
 </style>
 </head>
 
@@ -50,20 +47,22 @@ hr{ margin:30px 0; }
 
 <h1>🐄 ShadowBov</h1>
 
-<!-- CADASTRO -->
 <div class="card">
 <h2>Cadastro do Animal</h2>
 
 <label>Brinco</label>
 <input id="brinco">
+
 <label>Idade</label>
 <input id="idade">
+
 <label>Raça</label>
 <input id="raca">
+
 <label>Sexo</label>
 <input id="sexo">
 
-<button type="button" onclick="salvarAnimal()">Salvar Animal</button>
+<button onclick="salvarAnimal()">Salvar Animal</button>
 </div>
 
 <div class="card">
@@ -71,117 +70,49 @@ hr{ margin:30px 0; }
 <div id="lista"></div>
 </div>
 
-<hr>
-
-<!-- EXAME -->
-<div class="card">
-<h2>🩺 Exame Clínico</h2>
-
-<label>Animal</label>
-<select id="animalExame"></select>
-
-<label>Temperatura (°C)</label>
-<input id="temp">
-<label>FC (bpm)</label>
-<input id="fc">
-<label>FR (mpm)</label>
-<input id="fr">
-
-<label>Rúmen</label>
-<select id="rumen">
-  <option>Normal</option>
-  <option>Hipomotilidade</option>
-  <option>Atonia</option>
-</select>
-
-<label>Mucosas</label>
-<select id="mucosa">
-  <option>Rosadas</option>
-  <option>Pálidas</option>
-  <option>Ictéricas</option>
-</select>
-
-<label>Estado Geral</label>
-<select id="estado">
-  <option>Bom</option>
-  <option>Regular</option>
-  <option>Ruim</option>
-</select>
-
-<button type="button" onclick="salvarExame()">Salvar Exame</button>
-</div>
-
-<hr>
-
-<!-- HISTÓRICO -->
-<div class="card">
-<h2>📂 Histórico por Animal</h2>
-
-<label>Selecionar Animal</label>
-<select id="animalHistorico" onchange="mostrarHistorico()"></select>
-
-<div id="historico"></div>
-</div>
-
 <script>
-let animais = JSON.parse(localStorage.getItem("animais")) || [];
-let exames = JSON.parse(localStorage.getItem("exames")) || [];
-
 function salvarAnimal(){
+  let brinco = document.getElementById("brinco").value;
+  let idade  = document.getElementById("idade").value;
+  let raca   = document.getElementById("raca").value;
+  let sexo   = document.getElementById("sexo").value;
+
+  if(brinco === ""){
+    alert("Informe o brinco do animal");
+    return;
+  }
+
+  let animais = JSON.parse(localStorage.getItem("animais")) || [];
+
   animais.push({
-    brinco: brinco.value,
-    idade: idade.value,
-    raca: raca.value,
-    sexo: sexo.value
+    brinco: brinco,
+    idade: idade,
+    raca: raca,
+    sexo: sexo
   });
+
   localStorage.setItem("animais", JSON.stringify(animais));
-  atualizar();
-  brinco.value=idade.value=raca.value=sexo.value="";
+
+  document.getElementById("brinco").value="";
+  document.getElementById("idade").value="";
+  document.getElementById("raca").value="";
+  document.getElementById("sexo").value="";
+
+  mostrarAnimais();
 }
 
-function salvarExame(){
-  exames.push({
-    animal: animalExame.value,
-    temp: temp.value,
-    fc: fc.value,
-    fr: fr.value,
-    rumen: rumen.value,
-    mucosa: mucosa.value,
-    estado: estado.value,
-    data: new Date().toLocaleString()
-  });
-  localStorage.setItem("exames", JSON.stringify(exames));
-  atualizar();
-}
-
-function atualizar(){
+function mostrarAnimais(){
+  let lista = document.getElementById("lista");
   lista.innerHTML="";
-  animalExame.innerHTML="";
-  animalHistorico.innerHTML="";
+
+  let animais = JSON.parse(localStorage.getItem("animais")) || [];
 
   animais.forEach(a=>{
     lista.innerHTML += <p><b>${a.brinco}</b> - ${a.raca}</p>;
-    animalExame.innerHTML += <option>${a.brinco}</option>;
-    animalHistorico.innerHTML += <option>${a.brinco}</option>;
-  });
-
-  mostrarHistorico();
-}
-
-function mostrarHistorico(){
-  historico.innerHTML="";
-  let sel = animalHistorico.value;
-
-  exames.filter(e=>e.animal===sel).forEach(e=>{
-    historico.innerHTML += `
-      <p><b>${e.data}</b><br>
-      T:${e.temp} | FC:${e.fc} | FR:${e.fr}<br>
-      Rúmen:${e.rumen} | Mucosa:${e.mucosa} | Estado:${e.estado}
-      </p><hr>`;
   });
 }
 
-atualizar();
+mostrarAnimais();
 </script>
 
 </body>
