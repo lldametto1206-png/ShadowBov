@@ -2,117 +2,26 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ShadowBov</title>
-
-<style>
-body{
-  font-family: Arial, sans-serif;
-  background:#f4f7f6;
-  padding:20px;
-}
-h1,h2{
-  text-align:center;
-  color:#2f5d50;
-}
-label{
-  display:block;
-  margin-top:10px;
-}
-input, select{
-  width:100%;
-  padding:10px;
-  margin-top:5px;
-}
-button{
-  width:100%;
-  padding:15px;
-  margin-top:15px;
-  background:#2f5d50;
-  color:white;
-  border:none;
-  border-radius:8px;
-  font-size:18px;
-}
-.card{
-  background:white;
-  padding:15px;
-  margin-top:20px;
-  border-radius:8px;
-}
-</style>
+<title>ShadowBov Teste</title>
 </head>
 
 <body>
 
-<h1>🐄 ShadowBov</h1>
+<h1>Teste ShadowBov</h1>
 
-<div class="card">
-<h2>Cadastro do Animal</h2>
+<input id="campo" placeholder="Digite algo">
+<br><br>
+<button onclick="salvar()">Salvar</button>
 
-<label>Brinco</label>
-<input id="brinco">
-
-<label>Idade</label>
-<input id="idade">
-
-<label>Raça</label>
-<input id="raca">
-
-<label>Sexo</label>
-<input id="sexo">
-
-<button onclick="salvarAnimal()">Salvar Animal</button>
-</div>
-
-<div class="card">
-<h2>Animais Cadastrados</h2>
-<div id="lista"></div>
-</div>
+<div id="saida"></div>
 
 <script>
-function salvarAnimal(){
-  let brinco = document.getElementById("brinco").value;
-  let idade  = document.getElementById("idade").value;
-  let raca   = document.getElementById("raca").value;
-  let sexo   = document.getElementById("sexo").value;
-
-  if(brinco === ""){
-    alert("Informe o brinco do animal");
-    return;
-  }
-
-  let animais = JSON.parse(localStorage.getItem("animais")) || [];
-
-  animais.push({
-    brinco: brinco,
-    idade: idade,
-    raca: raca,
-    sexo: sexo
-  });
-
-  localStorage.setItem("animais", JSON.stringify(animais));
-
-  document.getElementById("brinco").value="";
-  document.getElementById("idade").value="";
-  document.getElementById("raca").value="";
-  document.getElementById("sexo").value="";
-
-  mostrarAnimais();
+function salvar(){
+  let valor = document.getElementById("campo").value;
+  localStorage.setItem("teste", valor);
+  document.getElementById("saida").innerHTML =
+    "Salvo: " + localStorage.getItem("teste");
 }
-
-function mostrarAnimais(){
-  let lista = document.getElementById("lista");
-  lista.innerHTML="";
-
-  let animais = JSON.parse(localStorage.getItem("animais")) || [];
-
-  animais.forEach(a=>{
-    lista.innerHTML += <p><b>${a.brinco}</b> - ${a.raca}</p>;
-  });
-}
-
-mostrarAnimais();
 </script>
 
 </body>
